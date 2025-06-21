@@ -6,7 +6,7 @@ import {
   faChartPie, faEnvelope, faHandHoldingDollar, faGear,
   faCalendarDays, faMapPin, faTable, faFile, faBook,
   faBoxOpen, faRocket, faGreaterThan, faTimes,
-  faTachometerAlt, faChartLine, faHeadset, faLayerGroup,faUserTie
+  faTachometerAlt, faChartLine, faHeadset, faLayerGroup, faUserTie
 } from '@fortawesome/free-solid-svg-icons';
 import { AccountContext } from '../../context/AccountContext';
 
@@ -67,13 +67,11 @@ function Sidebar({ isOpen, setIsOpen }) {
           <FontAwesomeIcon icon={faReact} className="text-blue-400" />
           <span className="text-lg font-semibold">Volt React</span>
         </div>
-        {isOpen && (
-          <FontAwesomeIcon
-            icon={faTimes}
-            className="text-white cursor-pointer lg:hidden"
-            onClick={() => setIsOpen(false)}
-          />
-        )}
+        <FontAwesomeIcon
+          icon={faTimes}
+          className="text-white cursor-pointer lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
       </div>
 
       {/* Scrollable Middle Section */}
@@ -81,7 +79,10 @@ function Sidebar({ isOpen, setIsOpen }) {
         {staticLinks.map((item, index) => (
           <div
             key={index}
-            onClick={() => navigate(item.path)}
+            onClick={() => {
+              navigate(item.path);
+              setIsOpen(false); // Close sidebar on mobile when clicking a link
+            }}
             className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-700 cursor-pointer"
           >
             <FontAwesomeIcon icon={item.icon} />
@@ -118,7 +119,10 @@ function Sidebar({ isOpen, setIsOpen }) {
 
         {/* Themesberg link after Components dropdown */}
         <div
-          onClick={() => navigate('/themesberg')}
+          onClick={() => {
+            navigate('/themesberg');
+            setIsOpen(false); // Close sidebar on mobile when clicking a link
+          }}
           className="flex items-center space-x-2 px-4 py-2 hover:bg-gray-700 cursor-pointer"
         >
           <FontAwesomeIcon icon={faLayerGroup} className="text-orange-400" />
@@ -162,6 +166,7 @@ function Sidebar({ isOpen, setIsOpen }) {
                 onClick={() => {
                   navigate('/account');
                   setShowAccountOption(false);
+                  setIsOpen(false); // Close sidebar on mobile when clicking a link
                 }}
                 className="hover:bg-gray-600 px-2 py-1 rounded cursor-pointer"
               >
@@ -181,10 +186,16 @@ function Sidebar({ isOpen, setIsOpen }) {
 
   return (
     <>
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 lg:hidden" onClick={() => setIsOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()}>
+        <div 
+          className="fixed inset-0 z-50 bg-black/40 bg-opacity-80 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <div 
+            className="h-full w-64 transform transition-transform duration-300 ease-in-out"
+            onClick={(e) => e.stopPropagation()}
+          >
             {renderSidebarContent()}
           </div>
         </div>
